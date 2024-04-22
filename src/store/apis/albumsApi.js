@@ -33,11 +33,27 @@ const albumsApi = createApi({
     endpoints(builder) {
         return {
 
+            //Mutation to delete an album from the slice
+            removeAlbum: builder.mutation({
+
+                invalidatesTags: (result, error, album) => {
+                    return [{type: 'Album', id: album.id}];
+                },
+
+                //creates a DELETE request of the form http://localhost:3005/albums/album.id
+                query: (album) => {
+                    return {
+                        url: `/albums/${album.id}`,
+                        method: 'DELETE'
+                    };
+                }
+            }),
+
             //Mutation to add a new album to the slice
             addAlbum: builder.mutation({
 
                 invalidatesTags: (result, error, user) => {
-                    return [{type: 'Album', id: user.id}];
+                    return [{type: 'UsersAlbums', id: user.id}];
                 },
 
                 query: (user) => {
@@ -59,16 +75,24 @@ const albumsApi = createApi({
             //http://localhost:3005/albums?userId=user.id to get all the albums for a particular user.
             fetchAlbums: builder.query({
 
+                //result has the data when we do the fetch operation (i.e. the whole list of albums), we can create tags based
+                //on the album id and user id. These tags are used by other endpoints later on to perform tag invalidation
+                //and re-do the fetch request for displaying up-to-date data on the screen. Here we provide tags for the
+                //albums that get invalidated when an album is deleted (used in the removeAlbum mutation)
+                // for a specific user and a tag that is invalidated when an album is created for a specific user (used in addAlbum mutation)
                 providesTags: (result, error, user) => {
-                    return [{type: 'Album', id: user.id }];
+                    const tags = result.map(album => {
+                        return {type: 'Album', id: album.id}
+                    });
+
+                    tags.push({type: 'UsersAlbums', id: user.id});
+                    return tags;
                 },
 
                 query: (user) => {
                     return {
                         url: '/albums', //path of the request
-                        params: {
-                            userId: user.id //query string of the request
-                        },
+                        params: {userId: user.id}, //query string of the request
                         method: 'GET',      //type of the HTTP method
                     };
                 },
@@ -79,5 +103,5 @@ const albumsApi = createApi({
 });
 
 
-export const {useFetchAlbumsQuery, useAddAlbumMutation} = albumsApi;
+export const {useFetchAlbumsQuery, useAddAlbumMutation, useRemoveAlbumMutation} = albumsApi;
 export {albumsApi};

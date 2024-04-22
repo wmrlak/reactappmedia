@@ -1,7 +1,7 @@
-import {useFetchAlbumsQuery, useAddAlbumMutation} from "../store";
+import {useAddAlbumMutation, useFetchAlbumsQuery} from "../store";
 import Skeleton from "./Skeleton";
-import ExpandablePanel from "./ExpandablePanel";
 import Button from "./Button";
+import AlbumsListItem from "./AlbumsListItem";
 
 function AlbumsList({user}) {
 
@@ -10,9 +10,8 @@ function AlbumsList({user}) {
     //you will notice that still one request happens. Identical requests are executed once and the same
     //response data is given. The tag system is used to mark certain queries as being out-of-date
     //after specific mutations are executed.
-    //isLoading() is set to true the first time we make the request. isFetching()
-    //is set to true every time we make the request.
-    const {data, error, isLoading} = useFetchAlbumsQuery(user);
+    //isLoading() is set to true the first time we make the request. isFetching() is set to true every time we make the request.
+    const {data, error, isLoading, isFetching} = useFetchAlbumsQuery(user);
 
     //mutation hooks give you a function to run when you want to change some data.
     //results contains data such as isError, isLoading, isSuccess, isUninitialized (this mutation hasn't been executed yet) etc.
@@ -27,16 +26,13 @@ function AlbumsList({user}) {
     };
 
     let content;
-    if (isLoading) {
+    if (isFetching) {
         content = <Skeleton className="h-10 w-full" times={3}/>
     } else if (error) {
         content = <div> Error loading albums.</div>
     } else {
         content = data.map(album => {
-            const header = <div>{album.title}</div>
-           return <ExpandablePanel key={album.id} header={header}>
-               List of photos in the album
-           </ExpandablePanel>
+            return <AlbumsListItem key={album.id} album={album}/>
         });
     }
 

@@ -3,6 +3,7 @@ import {configureStore} from "@reduxjs/toolkit";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {usersReducer} from "./slices/usersSlice";
 import {albumsApi} from "./apis/albumsApi";
+import {photosApi} from "./apis/photosApi";
 
 /**
  * Data organization in redux store:
@@ -17,15 +18,19 @@ import {albumsApi} from "./apis/albumsApi";
  * (B) Redux Toolkit Query (RTK Query) (This will be used to handle albums and photo data).
  */
 export const store = configureStore({
+
+    //Here we declare the combined reducers in the redux store:
     reducer: {
         users: usersReducer,
-        [albumsApi.reducerPath]: albumsApi.reducer //look up the value of albumsApi.reducerPath key, here we declare the combined reducers
+        [albumsApi.reducerPath]: albumsApi.reducer, //look up the value of albumsApi.reducerPath key
+        [photosApi.reducerPath]: photosApi.reducer //look up the value of photosApi.reducerPath key
     },
 
-    //This is a required part of the set-up process
+    //This is a required part of the set-up process for every api
     middleware: (getDefaultMiddleware) => {
         return getDefaultMiddleware()
             .concat(albumsApi.middleware)
+            .concat(photosApi.middleware);
     }
 });
 
@@ -43,4 +48,5 @@ setupListeners(store.dispatch);
 export * from './thunks/fetchUsers';
 export * from './thunks/addUser';
 export * from './thunks/removeUser';
-export {useFetchAlbumsQuery, useAddAlbumMutation} from './apis/albumsApi';
+export {useFetchAlbumsQuery, useAddAlbumMutation, useRemoveAlbumMutation} from './apis/albumsApi';
+export {useFetchPhotosQuery, useAddPhotoMutation, useRemovePhotoMutation}  from './apis/photosApi';

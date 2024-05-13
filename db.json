@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "id": "699d",
+      "name": "Tonya Von II"
+    },
+    {
+      "id": "65c8",
+      "name": "Tammy Kessler"
+    }
+  ],
+  "albums": [
+    {
+      "id": "48bd",
+      "userId": "699d",
+      "title": "Licensed Wooden Pizza"
+    },
+    {
+      "id": "b72a",
+      "userId": "699d",
+      "title": "Refined Metal Sausages"
+    },
+    {
+      "id": "e621",
+      "userId": "699d",
+      "title": "Unbranded Granite Tuna"
+    }
+  ],
+  "photos": [
+    {
+      "id": "9f54",
+      "albumId": "48bd",
+      "url": "https://loremflickr.com/150/150/abstract?lock=86954"
+    },
+    {
+      "id": "ad65",
+      "albumId": "48bd",
+      "url": "https://loremflickr.com/150/150/abstract?lock=67027"
+    },
+    {
+      "id": "e782",
+      "albumId": "48bd",
+      "url": "https://loremflickr.com/150/150/abstract?lock=55786"
+    }
+  ]
+}
